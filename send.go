@@ -7,7 +7,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/emersion/go-smtp"
+	smtp "github.com/emersion/go-smtp"
 )
 
 type Sender struct {
@@ -49,7 +49,7 @@ func (s *Sender) Send(from string, to []string, r io.Reader) error {
 				}
 			}
 
-			if err := c.Mail(from); err != nil {
+			if err := c.Mail(from, nil); err != nil {
 				return err
 			}
 			if err := c.Rcpt(addr); err != nil {
