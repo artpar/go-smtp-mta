@@ -33,42 +33,11 @@ func (s *Sender) Send(from string, to []string, r io.Reader) error {
 		}
 
 		for _, mx := range mxs {
-			c, err := smtp.Dial(mx.Host + ":25")
+		   err := smtp.SendMail(mx.Host + ":25", nil, from, addr, c.Data())
 			if err != nil {
-				return err
-			}
-
-			if err := c.Hello(s.Hostname); err != nil {
-				return err
-			}
-
-			if ok, _ := c.Extension("STARTTLS"); ok {
-				tlsConfig := &tls.Config{ServerName: mx.Host}
-				if err := c.StartTLS(tlsConfig); err != nil {
-					return err
-				}
-			}
-
-			if err := c.Mail(from, nil); err != nil {
-				return err
-			}
-			if err := c.Rcpt(addr); err != nil {
-				return err
-			}
-
-			wc, err := c.Data()
-			if err != nil {
-				return err
-			}
-			if _, err := io.Copy(wc, r); err != nil {
-				return err
-			}
-			if err := wc.Close(); err != nil {
-				return err
-			}
-
-			if err := c.Quit(); err != nil {
-				return err
+				break;
+			} else {
+				return err	
 			}
 		}
 	}
