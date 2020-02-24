@@ -1,13 +1,12 @@
 package mta
 
 import (
-	"crypto/tls"
 	"errors"
 	"io"
 	"net"
 	"strings"
 
-	smtp "github.com/emersion/go-smtp"
+	"github.com/emersion/go-smtp"
 )
 
 type Sender struct {
@@ -33,11 +32,11 @@ func (s *Sender) Send(from string, to []string, r io.Reader) error {
 		}
 
 		for _, mx := range mxs {
-		   err := smtp.SendMail(mx.Host + ":25", nil, from, addr, c.Data())
+			err := smtp.SendMail(mx.Host+":25", nil, from, []string{addr}, r)
 			if err != nil {
-				break;
+				break
 			} else {
-				return err	
+				return err
 			}
 		}
 	}
